@@ -1,0 +1,186 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoFinds - Second-Hand Marketplace</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f3f4f6;
+    }
+    header {
+      background: #047857;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    .container {
+      width: 90%;
+      margin: auto;
+      padding: 1rem;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+    input, button {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    button {
+      background: #047857;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #065f46;
+    }
+    nav button {
+      width: auto;
+      margin: 0 5px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>EcoFinds</h1>
+    <p>Buy & Sell Second-Hand Products</p>
+    <nav id="nav" style="display:none;">
+      <button onclick="showProfile()">Profile</button>
+      <button onclick="showProducts()">Marketplace</button>
+      <button onclick="showCart()">Cart</button>
+      <button onclick="showHistory()">My Purchases</button>
+    </nav>
+  </header>  <!-- Login Page -->  <div class="container" id="loginPage">
+    <h2>Login</h2>
+    <input type="text" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+  </div>  <!-- Profile Page -->  <div class="container" id="profilePage" style="display:none;">
+    <h2>My Profile</h2>
+    <input type="text" id="username" placeholder="Enter Username" />
+    <button onclick="saveProfile()">Save Profile</button>
+    <p><b>Eco Impact:</b> <span id="ecoPoints">0</span> EcoPoints earned 🌱</p>
+  </div>  <!-- Marketplace Page -->  <div class="container" id="productsPage" style="display:none;">
+    <h2>Marketplace</h2>
+    <div class="card">
+      <h3>Wooden Chair</h3>
+      <p>Price: ₹500</p>
+      <model-viewer src="https://modelviewer.dev/shared-assets/models/Chair.glb"
+        alt="A 3D model of a wooden chair"
+        auto-rotate
+        camera-controls
+        ar
+        style="width: 100%; height: 300px;">
+      </model-viewer>
+      <button onclick="addToCart('Wooden Chair',500)">Add to Cart</button>
+    </div><div class="card">
+  <h3>Used Laptop</h3>
+  <p>Price: ₹15,000</p>
+  <img src="https://via.placeholder.com/250" alt="Laptop" style="width:100%;border-radius:10px;" />
+  <button onclick="addToCart('Used Laptop',15000)">Add to Cart</button>
+</div>
+
+  </div>  <!-- Cart Page -->  <div class="container" id="cartPage" style="display:none;">
+    <h2>My Cart</h2>
+    <div id="cartItems"></div>
+    <button onclick="checkout()">Checkout</button>
+  </div>  <!-- Purchase History -->  <div class="container" id="historyPage" style="display:none;">
+    <h2>Previous Purchases</h2>
+    <div id="purchaseHistory"></div>
+  </div>  <script>
+    let ecoPoints = 0;
+    let cart = [];
+    let history = [];
+
+    function login() {
+      let email = document.getElementById("email").value;
+      let pass = document.getElementById("password").value;
+      if(email && pass){
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("profilePage").style.display = "block";
+        document.getElementById("nav").style.display = "block";
+      } else {
+        alert("Please enter email & password");
+      }
+    }
+
+    function saveProfile(){
+      let username = document.getElementById("username").value;
+      if(username){
+        alert("Profile saved for: " + username);
+      } else {
+        alert("Enter a username");
+      }
+    }
+
+    function showProfile(){
+      hideAll();
+      document.getElementById("profilePage").style.display = "block";
+    }
+
+    function showProducts(){
+      hideAll();
+      document.getElementById("productsPage").style.display = "block";
+    }
+
+    function showCart(){
+      hideAll();
+      document.getElementById("cartPage").style.display = "block";
+      renderCart();
+    }
+
+    function showHistory(){
+      hideAll();
+      document.getElementById("historyPage").style.display = "block";
+      renderHistory();
+    }
+
+    function hideAll(){
+      document.getElementById("profilePage").style.display = "none";
+      document.getElementById("productsPage").style.display = "none";
+      document.getElementById("cartPage").style.display = "none";
+      document.getElementById("historyPage").style.display = "none";
+    }
+
+    function addToCart(item, price){
+      cart.push({item, price});
+      alert(item + " added to cart");
+    }
+
+    function renderCart(){
+      let container = document.getElementById("cartItems");
+      container.innerHTML = "";
+      cart.forEach((c, i)=>{
+        container.innerHTML += <p>${c.item} - ₹${c.price}</p>;
+      });
+    }
+
+    function checkout(){
+      history = history.concat(cart);
+      cart = [];
+      ecoPoints += 10; // reward eco points
+      document.getElementById("ecoPoints").innerText = ecoPoints;
+      alert("Checkout complete! You earned 10 EcoPoints 🌱");
+      showHistory();
+    }
+
+    function renderHistory(){
+      let container = document.getElementById("purchaseHistory");
+      container.innerHTML = "";
+      history.forEach(h =>{
+        container.innerHTML += <p>${h.item} - ₹${h.price}</p>;
+      });
+    }
+  </script></body>
+</html>
